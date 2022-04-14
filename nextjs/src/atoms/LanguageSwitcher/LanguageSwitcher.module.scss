@@ -1,0 +1,9 @@
+@import '@styles/variables';
+
+.LanguageSwitcher {
+  &__link {
+    &--active {
+      border: 5px solid #f00;
+    }
+  }
+}

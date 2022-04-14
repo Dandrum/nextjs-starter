@@ -1,0 +1,31 @@
+# Official docker image.
+image: docker:latest
+
+services:
+    - docker:dind
+
+before_script:
+    - docker --version
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - echo $(date +%Y-%m-%d_%H-%M-%S)
+
+stages:
+    - test
+test_frontend:
+    stage: test
+    only:
+        - merge_requests
+        - develop
+        - master
+    before_script:
+        - docker build
+            -t nextjs-${CI_COMMIT_SHORT_SHA} ./nextjs
+            -f ./nextjs/Dockerfile.test
+    script:
+        - docker run --rm
+            --env-file .env.test
+            --name nextjs-${CI_COMMIT_SHORT_SHA}
+            -d nextjs-${CI_COMMIT_SHORT_SHA}
+
+        - sleep 20s
+        - docker exec nextjs-${CI_COMMIT_SHORT_SHA} npm run test

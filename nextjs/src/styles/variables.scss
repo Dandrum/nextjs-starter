@@ -1,0 +1,53 @@
+/* autoprefixer grid: no-autoplace */
+
+// Colors by name
+$black: #000000;
+$white: #ffffff;
+$grey0: #dddddd;
+$grey1: #7e7c7d;
+$grey2: #464545;
+$grey2: #333333;
+
+// Colors by alias
+$color-success: #00ae00;
+$color-warning: #e4e400;
+$color-error: #c00000;
+$color-refund: #d0059d;
+$color-running: #d36400;
+
+// Font mixins
+@mixin OpenSans {
+  font-family: 'Open Sans', sans-serif;
+}
+
+// Breakpoints (keep in sync with Media.js and redux ui.js)
+@mixin for-phone-only {
+  @media (max-width: 639px) {
+    @content;
+  }
+}
+@mixin for-phone-and-tablet-only {
+  @media (max-width: 1023px) {
+    @content;
+  }
+}
+@mixin from-tablet-portrait-up {
+  @media (min-width: 640px) {
+    @content;
+  }
+}
+@mixin from-tablet-landscape-up {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+@mixin from-desktop-up {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+@mixin from-big-desktop-up {
+  @media (min-width: 1440px) {
+    @content;
+  }
+}
