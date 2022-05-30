@@ -25,6 +25,7 @@ function getCsp() {
   csp += `script-src 'self' ${cspConfig.scriptDomains} ${prod ? "" : "'unsafe-eval'"};`; // NextJS requires 'unsafe-eval' in dev (faster source maps)
   csp += `style-src 'self' 'unsafe-inline' data: ${cspConfig.styleDomains};`; // NextJS requires 'unsafe-inline'
   csp += `img-src 'self' data: blob: ${cspConfig.imageDomains} ;`;
+  csp += `object-src 'self';`;
   csp += `font-src 'self';`;
   csp += `prefetch-src 'self';`;
   csp += `worker-src blob:;`;
@@ -75,8 +76,8 @@ const securityHeaders = [
 module.exports = withPlugins([
   [withSentryConfig, {
     silent: true
-  }],
-  {
+  }]
+],{
     crossOrigin: "anonymous",
     poweredByHeader: false,
     optimizeFonts: true,
@@ -133,4 +134,4 @@ module.exports = withPlugins([
       return config;
     }
   }
-])
+)
