@@ -31,19 +31,15 @@ const LanguageSwitcher = () => {
   return (
     <div className={styles.LanguageSwitcher}>
       {languages.map((lang, i) => (
-        <Link key={i} href={router.asPath} locale={lang.localCode}>
-          <a
-            className={`${styles.LanguageSwitcher__link} ${
-              currentLang?.localCode === lang.localCode
-                ? styles['LanguageSwitcher__link--active']
-                : ''
-            }`}
-          >
+        <Link key={i} href={router.asPath} locale={lang.localCode} className={`${styles.LanguageSwitcher__link} ${
+            currentLang?.localCode === lang.localCode
+              ? styles['LanguageSwitcher__link--active']
+              : ''
+          }`}>
             <Image src={lang.flag} alt={lang.name} height={12} width={30} />{' '}
             <span className={styles.LanguageSwitcher__link_name}>
               {lang.name}
             </span>
-          </a>
         </Link>
       ))}
     </div>
