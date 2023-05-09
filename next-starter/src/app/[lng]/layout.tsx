@@ -39,8 +39,18 @@ export async function generateStaticParams() {
 }
 
 export const metadata = {
+  metadataBase: new URL('https://localhost'),
     title: "NextJS Starter",
     description: 'NextJs Starter from Dan',
+    'apple-mobile-web-app-status-bar-style': 'black',
+themeColor: '#ffd5f5',
+  alternates: {
+    canonical: './',
+    languages: {
+      'en': '/en',
+      'de': '/de',
+    },
+  },
 }
 
 export default function RootLayout({
