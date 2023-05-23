@@ -1,0 +1,42 @@
+@import '@styles/variables';
+
+.breakpoint {
+  background: #fff;
+  display: inline-block;
+  padding: 10px;
+  position: fixed;
+  top: 150px;
+  z-index: 10000;
+  opacity: 0.7;
+  color: #000;
+
+  &__entry {
+    display: none;
+  }
+
+  @include for-phone-only {
+    &__for-phone-only {
+      display: block;
+    }
+  }
+  @include from-tablet-portrait-up {
+    &__from-tablet-portrait-up {
+      display: block;
+    }
+  }
+  @include from-tablet-landscape-up {
+    &__from-tablet-landscape-up {
+      display: block;
+    }
+  }
+  @include from-desktop-up {
+    &__from-desktop-up {
+      display: block;
+    }
+  }
+  @include from-big-desktop-up {
+    &__from-big-desktop-up {
+      display: block;
+    }
+  }
+}
