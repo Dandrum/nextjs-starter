@@ -1,0 +1,45 @@
+{
+  "name": "next-starter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "cypress": "cypress open --e2e --browser chrome",
+    "test": "cypress run",
+    "codeformat": "prettier --write 'src/**/*.{js,jsx,json,css,scss}'"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-brands-svg-icons": "^6.0.0",
+    "@fortawesome/free-solid-svg-icons": "^6.0.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@sentry/nextjs": "^7.15.0",
+    "@svgr/webpack": "^7.0.0",
+    "cypress": "^12.9.0",
+    "dotenv": "^16.0.0",
+    "formik": "^2.2.9",
+    "moment-timezone": "^0.5.34",
+    "next": "^13.0.6",
+    "next-i18next": "^13.0.0",
+    "next-seo": "^5.1.0",
+    "nprogress": "^0.2.0",
+    "prettier": "^2.5.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.49.9",
+    "sharp": "^0.32.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-next": "^13.0.6"
+  },
+  "browserslist": [
+    ">0.3%",
+    "not ie 11",
+    "not dead",
+    "not op_mini all"
+  ]
+}
