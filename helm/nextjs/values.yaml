@@ -1,0 +1,21 @@
+image: registry.gitlab.com/dandrum/scrumbook/nextjs:latest
+
+lifecycle:
+  postStart:
+    type: prisma
+
+ingress:
+  hosts:
+    - scrumbook.mediendesign-schmidt.de
+
+configMap:
+  APP_NAME: Scrumbook
+  APP_ENV: production
+  NEXT_PUBLIC_URL: https://scrumbook.mediendesign-schmidt.de
+  NEXT_HOST_NAME: https://scrumbook.mediendesign-schmidt.de
+  NEXTAUTH_URL: https://scrumbook.mediendesign-schmidt.de
+
+secrets:
+  DATABASE_URL: postgresql://posdtgress:7G9cUJgDdTPMZxKVcRb@scrumbook-service:5432/posdtgress?schema=public
+  GOOGLE_CLIENT_ID: 468626244493-38hcpj3e4a4sq34c3lj3rn28b8mtu1rq.apps.googleusercontent.com
+  GOOGLE_CLIENT_SECRET: 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
