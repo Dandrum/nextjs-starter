@@ -1,31 +1,141 @@
-# Official docker image.
 image: docker:latest
-
 services:
-    - docker:dind
-
+  - docker:dind
 before_script:
-    - docker --version
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - echo $(date +%Y-%m-%d_%H-%M-%S)
+  - echo $(date +%Y-%m-%d_%H-%M-%S)
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  - apk update && apk add --no-cache curl git bash jq
+  - git --version
+  - git config --global user.name "${GITLAB_USER_NAME}"
+  - git config --global user.email "${GITLAB_USER_EMAIL}"
+  - project_url=$(echo $CI_PROJECT_URL | sed 's/https:\/\///')
+  - git remote set-url origin https://oauth2:$ACCESS_TOKEN@$project_url
+  - git fetch --all --tags
 
 stages:
-    - test
-test_frontend:
-    stage: test
-    only:
-        - merge_requests
-        - develop
-        - master
-    before_script:
-        - docker build
-            -t nextjs-${CI_COMMIT_SHORT_SHA} ./nextjs
-            -f ./nextjs/Dockerfile.test
-    script:
-        - docker run --rm
-            --env-file .env.test
-            --name nextjs-${CI_COMMIT_SHORT_SHA}
-            -d nextjs-${CI_COMMIT_SHORT_SHA}
+  - check
+  - versioning
+  - changelog
+  - build_staging
+  - deploy_staging
+  - release
+  - deploy_production
 
-        - sleep 20s
-        - docker exec nextjs-${CI_COMMIT_SHORT_SHA} npm run test
+merge-request-labels:
+  stage: check
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+  script:
+    - chmod +x .gitlab/gitlab_check_labels.sh
+    - bash .gitlab/gitlab_check_labels.sh
+
+codeformat_lint:
+  stage: check
+  only:
+    - merge_requests
+  before_script:
+    - docker build
+      --no-cache
+      --tag "$CI_REGISTRY_IMAGE/nextjs:${CI_COMMIT_SHORT_SHA}" nextjs
+      -f ./nextjs/Dockerfile
+  script:
+    - docker run "$CI_REGISTRY_IMAGE/nextjs:${CI_COMMIT_SHORT_SHA}" npm run lint
+  after_script:
+    - docker container prune --force
+    - docker image rm "$CI_REGISTRY_IMAGE/nextjs:${CI_COMMIT_SHORT_SHA}" --force
+
+create-tag:
+  stage: versioning
+  only:
+    - main
+  except:
+    changes:
+      - CHANGELOG.md
+  script:
+    - chmod +x .gitlab/gitlab-taging.sh
+    - bash .gitlab/gitlab-taging.sh
+
+generate-changelog:
+  stage: changelog
+  only:
+    - tags
+  script:
+    - chmod +x .gitlab/gitlab-changelog.sh
+    - bash .gitlab/gitlab-changelog.sh
+
+build_staging:
+  stage: build_staging
+  only:
+    - tags
+  script:
+    - docker build
+      --no-cache
+      --tag "$CI_REGISTRY_IMAGE/nextjs:latest"
+      --tag "$CI_REGISTRY_IMAGE/nextjs:${CI_COMMIT_TAG}" nextjs
+      -f ./nextjs/Dockerfile.prod
+    - docker push "$CI_REGISTRY_IMAGE/nextjs" --all-tags
+
+deploy_staging:
+  stage: deploy_staging
+  needs:
+    - job: build_staging
+  only:
+    - tags
+  environment:
+    name: staging
+    url: https://staging.scrumbook.mediendesign-schmidt.de
+  script:
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - mv ./kubectl /usr/local/bin/kubectl
+    - apk add --update --no-cache ca-certificates bash git
+    - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    - chmod 700 get_helm.sh
+    - ./get_helm.sh
+    - helm version --client
+    - kubectl config set-context --current --namespace=scrumbook-stage --kubeconfig ${KUBECONFIG}
+
+    - helm upgrade nextjs ./helm/nextjs --namespace scrumbook-stage -f ${VALUES_STAGE} --set image=$CI_REGISTRY_IMAGE/nextjs:${CI_COMMIT_TAG}
+
+create_release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  only:
+    - tags
+  needs:
+    - job: generate-changelog
+  when: manual
+  before_script:
+    - echo $(date +%Y-%m-%d_%H-%M-%S)
+  script:
+    - echo "RUN RELEASE JOB"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: 'Release $CI_COMMIT_TAG'
+    description: "./CHANGELOG.md"
+
+deploy_production:
+  stage: deploy_production
+  when: on_success
+  needs:
+    - job: create_release
+  only:
+    - tags
+  environment:
+    name: production
+    url: https://scrumbook.mediendesign-schmidt.de
+  script:
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - mv ./kubectl /usr/local/bin/kubectl
+    - apk add --update --no-cache ca-certificates bash git
+    - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    - chmod 700 get_helm.sh
+    - ./get_helm.sh
+    - helm version --client
+    - kubectl config set-context --current --namespace=scrumbook --kubeconfig ${KUBECONFIG}
+
+    - helm upgrade nextjs ./helm/nextjs --namespace scrumbook -f ${VALUES} --set image=$CI_REGISTRY_IMAGE/nextjs:${CI_COMMIT_TAG}

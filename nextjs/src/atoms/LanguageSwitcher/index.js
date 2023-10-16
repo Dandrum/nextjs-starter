@@ -1,49 +1,50 @@
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import Image from 'next/image';
+'use client'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import Image from 'next/image'
 
-import styles from './LanguageSwitcher.module.scss';
+import styles from './LanguageSwitcher.module.scss'
 
-import enFlag from './flags/us.jpg';
-import germanyFlag from './flags/germany.jpg';
+import enFlag from './flags/us.jpg'
+import germanyFlag from './flags/germany.jpg'
 
 // get the languages
 const languages = [
   {
     name: 'Deutsch',
     localCode: 'de',
-    flag: germanyFlag,
+    flag: germanyFlag
   },
   {
     name: 'English',
     localCode: 'en',
-    flag: enFlag,
-  },
-];
+    flag: enFlag
+  }
+]
 
-const LanguageSwitcher = () => {
-  const router = useRouter();
-  let currentLang = languages.filter(
-    (lang) => lang.localCode === router.locale
-  );
-  currentLang = currentLang.length > 0 ? currentLang[0] : null;
+const LanguageSwitcher = ({ currentLang }) => {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   return (
     <div className={styles.LanguageSwitcher}>
       {languages.map((lang, i) => (
-        <Link key={i} href={router.asPath} locale={lang.localCode} className={`${styles.LanguageSwitcher__link} ${
-            currentLang?.localCode === lang.localCode
+        <Link
+          key={i}
+          href={pathname.replace(currentLang, lang.localCode) + (searchParams.toString() ? `?${searchParams.toString()}` : '')}
+          className={`${styles.LanguageSwitcher__link} ${
+            currentLang === lang.localCode
               ? styles['LanguageSwitcher__link--active']
               : ''
-          }`}>
+            }`}>
             <Image src={lang.flag} alt={lang.name} height={12} width={30} />{' '}
             <span className={styles.LanguageSwitcher__link_name}>
               {lang.name}
             </span>
-        </Link>
+         </Link>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default LanguageSwitcher;
+export default LanguageSwitcher
