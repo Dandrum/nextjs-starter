@@ -23,16 +23,6 @@ spec:
                                 name: {{ .Release.Name }}-configmap
                     ports:
                         -   containerPort: 3000
-                    {{ if .Values.lifecyle }}
-                    lifecycle:
-                    {{ if .Values.lifecyle.postStart }}
-                        postStart:
-                    {{ if .Values.lifecyle.postStart.type eq "prisma" }}
-                            exec:
-                                command: [ "npx", "prisma", "migrate", "deploy" ]
-                    {{ end }}
-                    {{ end }}
-                    {{ end }}
                     readinessProbe:
                         httpGet:
                             path: /
