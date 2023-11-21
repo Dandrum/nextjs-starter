@@ -1,9 +1,0 @@
-image: postgres:10-alpine
-
-storage:
-  size: 1Gi
-
-secrets:
-  POSTGRES_HOST: scrumbook-service
-  POSTGRES_USER: posdtgress
-  POSTGRES_PASSWORD: 7G9cUJgDdTPMZxKVcRb
