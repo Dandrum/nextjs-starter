@@ -13,6 +13,7 @@ html {
   touch-action: manipulation;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  hanging-punctuation: frist last;
 }
 
 html,
@@ -20,5 +21,13 @@ body,
 #root {
   height: 100%;
 }
-body {
+
+h1, h2, h3, h4, h5 ,h6 {
+  text-wrap: balance;
 }
+
+p {
+  max-width: 75ch;
+  text-wrap: pretty;
+}
+
