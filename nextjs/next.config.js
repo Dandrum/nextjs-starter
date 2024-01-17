@@ -30,10 +30,6 @@ function getCsp() {
 
 const securityHeaders = [
     {
-        key: 'Cache-Control',
-        value: 'public, max-age=31536000, must-revalidate'
-    },
-    {
         key: 'X-DNS-Prefetch-Control',
         value: 'on'
     },
