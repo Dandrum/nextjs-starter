@@ -5,6 +5,7 @@
 *:before,
 *:after {
   box-sizing: inherit;
+  min-width: 0;
 }
 
 html {
@@ -13,7 +14,7 @@ html {
   touch-action: manipulation;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  hanging-punctuation: frist last;
+  hanging-punctuation: first last;
 }
 
 html,
