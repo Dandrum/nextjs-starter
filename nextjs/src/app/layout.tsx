@@ -5,6 +5,10 @@ import { headers, cookies } from 'next/headers'
 import acceptLanguage from 'accept-language'
 import { fallbackLang, langCookie, languages } from '@/utils/i18/i18n'
 
+import { OpenSans } from '@/styles/loadFonts';
+
+import '@/styles/index.scss';
+
 acceptLanguage.languages(languages)
 
 export const metadata: Metadata = {
@@ -29,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     if (!lng) lng = fallbackLang
 
     return (
-        <html lang={lng} dir={dir(lng)}>
+        <html lang={lng} dir={dir(lng)} className={OpenSans.className}>
         <body>
         {children}
         </body>

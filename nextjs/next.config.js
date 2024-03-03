@@ -74,9 +74,11 @@ const nextConfig = {
         hideSourceMaps: true
     },
     images: {
-        domains: [
-            'localhost',
-            'lh3.googleusercontent.com'
+        remotePatterns: [
+            {
+                protocol: 'http',
+                hostname: 'localhost'
+            }
         ]
     },
     async headers() {
