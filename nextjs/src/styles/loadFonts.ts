@@ -5,23 +5,23 @@ export const OpenSans = localFont({
         {
             path: './fonts/open-sans-v16-latin-300.woff2',
             weight: '300',
-            style: 'normal',
+            style: 'normal'
         },
         {
             path: './fonts/open-sans-v16-latin-600.woff2',
             weight: '600',
-            style: 'italic',
+            style: 'italic'
         },
         {
             path: './fonts/open-sans-v16-latin-700.woff2',
             weight: '700',
-            style: 'normal',
+            style: 'normal'
         },
         {
             path: './fonts/open-sans-v16-latin-regular.woff2',
             weight: '400',
-            style: 'italic',
-        },
+            style: 'italic'
+        }
     ],
     display: 'swap',
     preload: true
