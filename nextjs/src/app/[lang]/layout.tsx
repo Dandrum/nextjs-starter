@@ -18,7 +18,7 @@ export default function MainLayout({
 }) {
     return (
         <>
-            <LanguageSwitcher currentLang={lang}/>
+            <LanguageSwitcher />
             {children}
         </>
     )

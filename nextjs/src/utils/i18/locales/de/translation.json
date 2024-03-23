@@ -1,3 +1,7 @@
 {
-  "world": "Welt"
+  "world": "Welt",
+  "days": "Tage",
+  "hours": "Stunden",
+  "minutes": "Minuten",
+  "seconds": "Sekunden"
 }
