@@ -53,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
 
     let locale
     if (cookieStore.has('NEXT_LOCALE')) {

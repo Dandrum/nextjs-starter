@@ -65,14 +65,11 @@ const securityHeaders = [
 const nextConfig = {
     compress: true,
     generateEtags: true,
+    reactStrictMode: true,
     crossOrigin: 'anonymous',
     poweredByHeader: false,
-    optimizeFonts: true,
     productionBrowserSourceMaps: false,
     compiler: prod ? { removeConsole: { exclude: [ 'error' ] } } : {},
-    sentry: {
-        hideSourceMaps: true
-    },
     images: {
         remotePatterns: [
             {
